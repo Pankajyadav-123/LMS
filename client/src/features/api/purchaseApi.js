@@ -1,0 +1,46 @@
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+const BASE_API = import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1";
+const COURSE_PURCHASE_API = `${BASE_API}/purchase`;
+
+export const purchaseApi = createApi({
+  reducerPath: "purchaseApi",
+  baseQuery: fetchBaseQuery({
+    baseUrl: COURSE_PURCHASE_API,
+    credentials: "include",
+  }),
+  endpoints: (builder) => ({
+    createCheckoutSession: builder.mutation({
+      query: (courseId) => ({
+        url: "/checkout/create-checkout-session",
+        method: "POST",
+        body: { courseId },
+      }),
+    }),
+    getCourseDetailWithStatus: builder.query({
+      query: (courseId) => ({
+        url: `/course/${courseId}/detail-with-status`,
+        method: "GET",
+      }),
+    }),
+    getPurchasedCourses: builder.query({
+      query: () => ({
+        url: `/`,
+        method: "GET",
+      }),
+    }),
+    verifyEnrollment: builder.mutation({
+      query: (courseId) => ({
+        url: `/verify-enrollment/${courseId}`,
+        method: "POST",
+      }),
+    }),
+  }),
+});
+
+export const {
+  useCreateCheckoutSessionMutation,
+  useGetCourseDetailWithStatusQuery,
+  useGetPurchasedCoursesQuery,
+  useVerifyEnrollmentMutation,
+} = purchaseApi;
